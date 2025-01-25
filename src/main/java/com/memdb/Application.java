@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 
 public class Application {
     public static void main(String[] args) {
+        startApp();
+    }
+
+    public static Javalin startApp() {
         MemDB db = new InMemoryDB();
         DBController controller = new DBController(db);
 
@@ -18,6 +22,8 @@ public class Application {
                          .error(400, ctx -> ctx.result("bad request"));
 
         app.start(4000);
+
+        return app;
     }
 
     static class DBController {
