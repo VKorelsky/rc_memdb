@@ -2,6 +2,7 @@ package com.memdb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
 import kong.unirest.Unirest;
 import kong.unirest.HttpResponse;
 import io.javalin.Javalin;
@@ -44,5 +45,36 @@ public class ApplicationTest {
 
         assertEquals(200, getResponse.getStatus());
         assertEquals(value, getResponse.getBody());
+    }
+
+    @Test
+    void testGetEmptyParams() {
+        HttpResponse<String> getResponse = Unirest.get(GET_URL)
+                                                  .asString();
+
+        assertEquals(400, getResponse.getStatus());
+        assertEquals("bad request", getResponse.getBody());
+    }
+
+    @Test
+    void testSetMalformedParams() {
+        HttpResponse<String> setResponse = Unirest.get(SET_URL + "?param")
+                                                  .asString();
+
+        assertEquals(400, setResponse.getStatus());
+        assertEquals("bad request", setResponse.getBody());
+    }
+
+    @Test
+    void testSetMultipleParams() {
+        HttpResponse<String> setResponse = Unirest.get(SET_URL)
+                                                  .queryString(Map.of(
+                                                    "key1", "value1",
+                                                    "key2", "value2"
+                                                  ))
+                                                  .asString();
+
+        assertEquals(400, setResponse.getStatus());
+        assertEquals("bad request", setResponse.getBody());
     }
 }
